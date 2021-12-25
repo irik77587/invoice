@@ -118,7 +118,7 @@ export default class Invoice extends Component {
     
     <input type="text" placeholder="Description" ref={this.desc} style={halfWidth} />
     <input type="number" placeholder="Price" ref={this.cost} style={quartWidth} />
-    <button onClick={this.addToInvoice.bind(this)} style={quartWidth} >Add to invoice</button>
+    <button onClick={this.addToInvoice.bind(this)} style={quartWidth} >Add</button>
     {this.state.invoice.map((s,idx) => (
       <Fragment key={"cart-product-" + idx}>
         <section style={flexbox}>

@@ -25,18 +25,16 @@ export default class App extends Component {
     }
   }
   componentDidUpdate() {
-    if(this.state.clients.length > 0) {
-      if(this.state.clients.length < localStorage.length) {
-        var extras = localStorage.length - this.state.clients.length;
-        for(let i = 0; i < extras; i++) {
-          localStorage.removeItem(this.state.clients.length + i);
-        }
+    if(this.state.clients.length < localStorage.length) {
+      var extras = localStorage.length - this.state.clients.length;
+      for(let i = 0; i < extras; i++) {
+        localStorage.removeItem(this.state.clients.length + i);
       }
-      this.state.clients.map((c,idx)=>{
-        var s = JSON.stringify(c);
-        if(s !== localStorage.getItem(idx)) localStorage.setItem(idx,s);
-      })
     }
+    this.state.clients.map((c,idx)=>{
+      var s = JSON.stringify(c);
+      if(s !== localStorage.getItem(idx)) localStorage.setItem(idx,s);
+    })
   }
   componentDidMount() {
     window.matchMedia("(min-width: 820px)").addEventListener('change', e => this.setState({

@@ -56,7 +56,7 @@ export default class ClientProfile extends Component {
       <button style={halfWidth} onClick={this.createClient.bind(this)}>Enter</button>
 
       <section style={this.state.status == "failure" ? errorbox : this.state.status == "success" ? successbox : this.state.status == "warning" ? warnbox : hidden}>
-        {this.status.statusDesc}
+        {this.state.statusDesc}
         <button onClick={() => {this.setState({status:undefined,statusDesc:undefined})}}>X</button>
       </section>
 
