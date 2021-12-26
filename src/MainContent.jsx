@@ -1,7 +1,8 @@
 import React, {Component, Fragment, createRef} from 'react';
 import ClientProfile from './ClientProfile';
 import Invoice from './Invoice';
-import ListServices from'./ListServices';
+import ListInvoices from'./ListInvoices';
+import PrintButton from './PrintButton';
 export default class MainContent extends Component {
   constructor(props) {
     super(props);
@@ -19,7 +20,7 @@ export default class MainContent extends Component {
       return alphanum(c.brand) == alphanum(profile.brand);
     }) == undefined);
     if(success) {
-      this.props.updateClientList(this.props.clients.concat([profile]));
+      this.props.updateClientList(this.props.clients.concat([{ ...profile, deals: []}]));
       this.setState((state,props)=>({current: state.current+1}));
     }
     return success;
@@ -29,6 +30,7 @@ export default class MainContent extends Component {
     var clientProfile = this.props.clients;
     clientProfile[this.state.current].deals.unshift(deal);
     this.props.updateClientList(clientProfile);
+    return true;
   }
   removeDeal(idx) {
 //    console.debug("Removing old invoice: " + JSON.stringify(this.props.clients[this.state.current].deals[idx]));
@@ -88,9 +90,17 @@ export default class MainContent extends Component {
       {this.state.content == "report" && this.props.clients[this.state.current].deals.length == 0 && (<p>No transaction report found</p>)}
       {this.state.content == "report" && this.props.clients[this.state.current].deals.length > 0 && this.props.clients[this.state.current].deals.map((c,idx)=>(
       <Fragment key={"invoice-" + c.brand + idx}>
-      <label style={{width: "calc(100% - 2.5em)"}}>Date: {c.date}</label>
+      <label style={{width: "calc(100% - 5em)"}}>Date: {c.date}</label>
+      <PrintButton style={{width: "2.5em"}} 
+          date={c.date} tax={c.tax} currency={c.currency} services={c.sold} subtotal={c.subtotal}
+          brand={this.props.clients[this.state.current].brand}
+          agent={this.props.clients[this.state.current].agent}
+          local={this.props.clients[this.state.current].local}
+          email={this.props.clients[this.state.current].email}
+          phone={this.props.clients[this.state.current].phone}
+          cyber={this.props.clients[this.state.current].cyber} />
       <button style={{width: "2.5em"}} onClick={this.removeDeal.bind(this,idx)}>{cross}</button>
-      <ListServices prefix={"invoice-" + c.brand + idx} services={c.sold} />
+      <ListInvoices prefix={"invoice-" + c.brand + idx} services={c.sold} />
       </Fragment>
       ))}
     </>

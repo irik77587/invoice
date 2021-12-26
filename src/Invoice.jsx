@@ -5,17 +5,20 @@ export default class Invoice extends Component {
     this.state = {
       status: undefined,
       statusDesc: undefined,
-      invoice: [] // Cart for new invoice
+      invoice: [], // Cart for new invoice
+      subtotal: 0
     }
     /* Ref for invoice */
-    this.desc = React.createRef();  // Service decsription
-    this.cost = React.createRef();  // Service Price
-    this.date = React.createRef();  // Date of current invoice
+    this.desc = createRef();  // Service decsription
+    this.cost = createRef();  // Service Price
+    this.date = createRef();  // Date of current invoice
+    this.tax = createRef();
+    this.sym = createRef();
   }
   addToInvoice() {
-    var desc = this.desc.current.value;
-    var cost = this.cost.current.value;
-    if(desc == "") return this.setState({status:"error",statusDesc:"Empty service Description"});
+    var desc = this.desc.current.value,
+        cost = this.cost.current.value;
+    if(desc == "") return this.setState({status:"error",statusDesc:"Empty service description"});
     if(cost == "") return this.setState({status:"error",statusDesc:"Empty or non-numeric service price"});
     if(this.state.invoice.find(c => String(c.desc).replaceAll(/[^A-Z0-9a-z]/g, "").toUpperCase() == String(desc).replaceAll(/[^A-Z0-9a-z]/g, "").toUpperCase())) return this.setState({status:"failure",statusDesc:"Possibly duplicate service description"});
     var newService = {
@@ -23,12 +26,13 @@ export default class Invoice extends Component {
       cost: cost
     };
     this.setState((state,props) => ({
-      status:undefined,statusDesc:undefined,
+      status:undefined,statusDesc:undefined,subtotal:state.subtotal + Number(cost),
       invoice: [ ...state.invoice, newService]
     }));
   }
   removeService(idx) {
     this.setState((state,props)=>({
+      subtotal:state.subtotal - Number(state.invoice[idx].cost),
       invoice: [ ...state.invoice.slice(0,idx), ...state.invoice.slice(idx+1)]
     }));
   }
@@ -52,19 +56,25 @@ export default class Invoice extends Component {
     this.swapInArray(current,next);
   }
   finalize() {
-    var date = this.date.current.value;
-    if(this.state.invoice.length == 0) this.setState({status:"failure",statusDesc:"Empty Cart"}); else {
-      this.setState({status:undefined,statusDesc:undefined});
-      this.props.saveInvoice({
-        date: date == "" ? new Date().toISOString().slice(0,10) : date,
-        sold: this.state.invoice
-      });
-    }
+    var date = this.date.current.value,
+        tax = this.tax.current.value,
+        sym = this.sym.current.value;
+    if(tax == "") return this.setState({status:"error",statusDesc:"Empty or non-numeric tax"});
+    if(sym == "") return this.setState({status:"error",statusDesc:"Empty billing currency"});
+    if(this.state.invoice.length == 0) return this.setState({status:"failure",statusDesc:"Empty Cart"});
+    
+    this.setState({status:undefined,statusDesc:undefined});
+    this.props.saveInvoice({
+      date: date == "" ? new Date().toISOString().slice(0,10) : date,
+      tax: tax, currency: sym, subtotal: this.state.subtotal,
+      sold: this.state.invoice
+    }) ? this.setState({status:"success",statusDesc:"Invoice Added!"}) : this.setState({status:"error",statusDesc:"Failed!"});
+      
   }
   componentDidMount() {
     if(this.state.invoice.length == 0 && this.props.client.deals.length > 0) {
       var prevDeal = this.props.client.deals[0];
-      this.setState({invoice:prevDeal.sold});
+      this.setState({invoice:prevDeal.sold,subtotal:prevDeal.subtotal});
     }
   }
   render() {
@@ -112,6 +122,12 @@ export default class Invoice extends Component {
     
     <label style={thirdQuart}>Invoice Date:</label>
     <input type="date" placeholder="Invoice date" style={quartWidth} ref={this.date} defaultValue={new Date().toISOString().slice(0,10)} />
+    
+    
+    <input type="text" placeholder="Currency" ref={this.sym} style={quartWidth} />
+    <input type="number" placeholder="Tax" ref={this.tax} style={quartWidth} />
+    <label style={thirdQuart}>Sub Total: {this.state.subtotal}</label>
+    
     <p>Invoice no: {Array.isArray(this.props.client.deals) && this.props.client.deals.length}</p>
     <p>Company: {this.props.client.brand}</p>
     <p>Owner/agent: {this.props.client.agent}</p>

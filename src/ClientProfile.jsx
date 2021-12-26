@@ -8,7 +8,7 @@ export default class ClientProfile extends Component {
     this.local=createRef(); // Company Address
     this.email=createRef();
     this.phone=createRef();
-    this.site=createRef();  // website
+    this.cyber=createRef();  // website
   }
   createClient() {
     if(this.brand.current.value == "") this.setState({status:"warning",statusDesc:"Warning! Company Name cannot be empty"}); else {
@@ -18,8 +18,7 @@ export default class ClientProfile extends Component {
         local : this.local.current.value, // Company Address
         email : this.email.current.value,
         phone : this.phone.current.value,
-        site : this.site.current.value,  // website
-        deals : []  // transaction history
+        cyber : this.cyber.current.value  // website
       }) ? this.setState({status:"success",statusDesc:"Success!"}) : this.setState({status:"failure",statusDesc:"Failed! Probably duplicate"});
     }
   }
@@ -60,12 +59,12 @@ export default class ClientProfile extends Component {
         <button onClick={() => {this.setState({status:undefined,statusDesc:undefined})}}>X</button>
       </section>
 
-      <input style={fullWidth} type="text" placeholder="Company" ref={this.brand} />
-      <input style={fullWidth} type="text" placeholder="Owner/Agent" ref={this.agent} />
-      <input style={fullWidth} type="text" placeholder="Address" ref={this.local} />
-      <input style={fullWidth} type="text" placeholder="Email" ref={this.email} />
-      <input style={fullWidth} type="text" placeholder="Website" ref={this.site} />
-      <input style={fullWidth} type="text" placeholder="Phone" ref={this.phone} />
+      <input style={fullWidth} type="text" ref={this.brand} placeholder="Company" />
+      <input style={fullWidth} type="text" ref={this.agent} placeholder="Owner/Agent" />
+      <input style={fullWidth} type="text" ref={this.local} placeholder="Address" />
+      <input style={fullWidth} type="text" ref={this.email} placeholder="Email" />
+      <input style={fullWidth} type="text" ref={this.cyber} placeholder="Website" />
+      <input style={fullWidth} type="text" ref={this.phone} placeholder="Phone" />
     </>
     )
   }
