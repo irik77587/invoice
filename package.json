@@ -1,37 +1,44 @@
 {
-  "name": "react-webpack",
-  "version": "1.0.0",
-  "description": "Starter template for react app built on webpack v4",
-  "main": "index.js",
-  "scripts": {
-    "start": "webpack serve --config ./webpack.config.js --mode development --port 3000",
-    "build": "webpack --config ./webpack.config.js --mode production",
-    "dev": "webpack --config ./webpack.config.js --mode development"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "name": "my-app",
+  "version": "0.1.0",
+  "private": true,
+  "homepage": ".",
   "devDependencies": {
-    "@babel/core": "^7.16.0",
-    "@babel/preset-env": "^7.16.0",
-    "@babel/preset-react": "^7.16.0",
-    "babel-loader": "^8.2.3",
-    "css-loader": "^6.5.1",
-    "style-loader": "^3.3.1",
-    "webpack": "^5.65.0",
-    "webpack-cli": "^4.9.1",
-    "webpack-dev-server": "^3.11.3"
+    "@testing-library/jest-dom": "^5.16.1",
+    "@testing-library/react": "^11.2.7",
+    "@testing-library/user-event": "^12.8.3",
+    "web-vitals": "^1.1.2"
   },
   "dependencies": {
     "@react-pdf/renderer": "^2.0.21",
-    "assert": "^2.0.0",
-    "bootstrap": "^5.1.3",
-    "browserify-zlib": "^0.2.0",
-    "buffer": "^6.0.3",
-    "process": "^0.11.10",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "stream-browserify": "^3.0.0",
-    "util": "^0.12.4"
+    "react-scripts": "4.0.3"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "prebuild" : "[ ! -d \"docs\" ] || mv docs build",
+    "build": "react-scripts build",
+    "postbuild" : "mv build docs",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

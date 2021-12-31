@@ -25,7 +25,7 @@ export default class Invoice extends Component {
       desc: desc,
       cost: cost
     };
-    this.setState((state,props) => ({
+    return this.setState((state,props) => ({
       status:undefined,statusDesc:undefined,subtotal:state.subtotal + Number(cost),
       invoice: [ ...state.invoice, newService]
     }));
@@ -46,12 +46,12 @@ export default class Invoice extends Component {
     });
   }
   pushUp(current) {
-    if(current==0) return false;
+    if(current == 0) return false;
     const prev = current - 1;
     this.swapInArray(prev,current);
   }
-  pullDown(idx) {
-    if(idx+1==this.state.invoice.length) return false;
+  pullDown(current) {
+    if(current + 1 == this.state.invoice.length) return false;
     const next = current + 1;
     this.swapInArray(current,next);
   }
@@ -83,7 +83,7 @@ export default class Invoice extends Component {
       flexbox = {display: "flex"},
       thirdQuart = {width: "75%"},
       cross = "\u274C",
-      Cross = "\u2A2F",
+//      Cross = "\u2A2F",
       xutri = "\u25B3",
       xdtri = "\u25BD";
     const hidden = {display: "none"};
