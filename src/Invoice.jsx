@@ -12,27 +12,28 @@ export default class Invoice extends Component {
     this.desc = createRef();  // Service decsription
     this.cost = createRef();  // Service Price
     this.date = createRef();  // Date of current invoice
-    this.tax = createRef();
-    this.sym = createRef();
+    this.tax = createRef();   // Tax & VAT
+    this.sym = createRef();   // Currency name/symbol
   }
   addToInvoice() {
-    var desc = this.desc.current.value,
-        cost = this.cost.current.value;
-    if(desc == "") return this.setState({status:"error",statusDesc:"Empty service description"});
-    if(cost == "") return this.setState({status:"error",statusDesc:"Empty or non-numeric service price"});
-    if(this.state.invoice.find(c => String(c.desc).replaceAll(/[^A-Z0-9a-z]/g, "").toUpperCase() == String(desc).replaceAll(/[^A-Z0-9a-z]/g, "").toUpperCase())) return this.setState({status:"failure",statusDesc:"Possibly duplicate service description"});
+    const alphanum = /[^0-9a-z]/ig;
+    var _desc = this.desc.current.value,
+        _cost = this.cost.current.value;
+    if(_desc == "") return this.setState({status:"error",statusDesc:"Empty service description"});
+    if(_cost == "") return this.setState({status:"error",statusDesc:"Empty or non-numeric service price"});
+    if(this.state.invoice.length && this.state.invoice.find(c => c.desc.replace(alphanum, "").toUpperCase() == _desc.replace(alphanum, "").toUpperCase()) != undefined) return this.setState({status:"failure",statusDesc:"Possibly duplicate service description"});
     var newService = {
-      desc: desc,
-      cost: cost
+      desc: _desc,
+      cost: _cost
     };
     return this.setState((state,props) => ({
-      status:undefined,statusDesc:undefined,subtotal:state.subtotal + Number(cost),
-      invoice: [ ...state.invoice, newService]
+      status:undefined,statusDesc:undefined,subtotal:state.subtotal + Number(_cost),
+      invoice: state.invoice.concat( [newService] )
     }));
   }
   removeService(idx) {
     this.setState((state,props)=>({
-      subtotal:state.subtotal - Number(state.invoice[idx].cost),
+      subtotal: state.invoice.length == 1 ? 0 : state.subtotal - Number(state.invoice[idx].cost),
       invoice: [ ...state.invoice.slice(0,idx), ...state.invoice.slice(idx+1)]
     }));
   }
@@ -74,7 +75,7 @@ export default class Invoice extends Component {
   componentDidMount() {
     if(this.state.invoice.length == 0 && this.props.client.deals.length > 0) {
       var prevDeal = this.props.client.deals[0];
-      this.setState({invoice:prevDeal.sold,subtotal:prevDeal.subtotal});
+      return this.setState({invoice:prevDeal.sold,subtotal:prevDeal.subtotal});
     }
   }
   render() {

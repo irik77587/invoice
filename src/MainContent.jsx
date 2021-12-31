@@ -1,4 +1,4 @@
-import React, {Component, Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 import ClientProfile from './ClientProfile';
 import Invoice from './Invoice';
 import ListInvoices from'./ListInvoices';

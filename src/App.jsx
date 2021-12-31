@@ -39,7 +39,7 @@ export default class App extends Component {
   render(){
 	  return (
 	    <div className="flexbox">
-	      <div class="sidebar">
+	      <div className="sidebar">
           <button onClick={()=>this.setState({content:"restore"})} >Restore</button>
           <button onClick={()=>this.setState({content:"backup"})} >Backup</button>
 	      </div>
